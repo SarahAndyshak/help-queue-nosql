@@ -7,12 +7,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 function App(){
   return (
     <Router>
-      <Header>
+      <Header />
         <Routes>
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/" element={<TicketControl />} />
         </Routes>
-      </Header>
     </Router>
     
     // <React.Fragment>

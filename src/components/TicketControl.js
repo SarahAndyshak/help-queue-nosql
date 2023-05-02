@@ -7,8 +7,6 @@ import { db, auth } from './../firebase.js';
 import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc, query, orderBy } from "firebase/firestore";
 import { formatDistanceToNow } from 'date-fns';
 
-// refactored to use hooks, connect to Firebase, most changed code removed
-
 function TicketControl() {
 
   const [formVisibleOnPage, setFormVisibleOnPage] = useState(false);
@@ -50,9 +48,6 @@ function TicketControl() {
     return () => unSubscribe();
   }, []);
 
-
-
-
   const handleClick = () => {
     if (selectedTicket != null) {
       setFormVisibleOnPage(false);
@@ -61,76 +56,73 @@ function TicketControl() {
     } else {
       setFormVisibleOnPage(!formVisibleOnPage);
     }
-  }
-
+  };
 
   const handleDeletingTicket = async (id) => {
     await deleteDoc(doc(db, "tickets", id));
     setSelectedTicket(null);
-  }
+  };
 
   const handleEditClick = () => {
     setEditing(true);
-  }
+  };
 
   const handleEditingTicketInList = async (ticketToEdit) => {
     const ticketRef = doc(db, "tickets", ticketToEdit.id);
     await updateDoc(ticketRef, ticketToEdit);
     setEditing(false);
     setSelectedTicket(null);
-  }
+  };
 
   const handleAddingNewTicketToList = async (newTicketData) => {
     await addDoc(collection(db, "tickets"), newTicketData);
     setFormVisibleOnPage(false);
-  }
+  };
 
   const handleChangingSelectedTicket = (id) => {
-    // const selectedTicket = this.state.mainTicketList.filter(ticket => ticket.id === id)[0];
-    // this.setState({selectedTicket: selectedTicket});
     const selection = mainTicketList.filter(ticket => ticket.id === id)[0];
     setSelectedTicket(selection);
-  }
-
-  // render(){
-    // let currentlyVisibleState = null;
-    // let buttonText = null; 
+  };
 
     if(auth.currentUser == null){
       return (
         <React.Fragment>
           <h1>You must be signed into access the queue.</h1>
         </React.Fragment>
-      )
+      );
     } else if (auth.currentUser != null) {
       let currentlyVisibleState = null;
       let buttonText = null;
     
     if (error) {
-      currentlyVisibleState = <p>There was an error: {error}</p>
+      currentlyVisibleState = <p>There was an error: {error}</p>;
     } else if (editing) {      
-      currentlyVisibleState = 
+      currentlyVisibleState = (
         <EditTicketForm 
           ticket = {selectedTicket} 
-          onEditTicket = {handleEditingTicketInList} />;
+          onEditTicket = {handleEditingTicketInList} />
+      );
       buttonText = "Return to Ticket List";
     } else if (selectedTicket != null) {
-      currentlyVisibleState = 
+      currentlyVisibleState = (
         <TicketDetail 
           ticket={selectedTicket} 
           onClickingDelete={handleDeletingTicket}
-          onClickingEdit = {handleEditClick} />;
+          onClickingEdit = {handleEditClick} />
+      );
       buttonText = "Return to Ticket List";
     } else if (formVisibleOnPage) {
-      currentlyVisibleState = 
+      currentlyVisibleState = (
         <NewTicketForm 
-          onNewTicketCreation={handleAddingNewTicketToList}/>;
+          onNewTicketCreation={handleAddingNewTicketToList}/>
+      );
       buttonText = "Return to Ticket List"; 
     } else {
-      currentlyVisibleState = 
+      currentlyVisibleState = (
         <TicketList 
           onTicketSelection={handleChangingSelectedTicket} 
-          ticketList={mainTicketList} />;
+          ticketList={mainTicketList} />
+      );
       buttonText = "Add Ticket"; 
     }
   

@@ -13,10 +13,10 @@ function SignIn() {
     const password = event.target.password.value;
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        setSignUpSuccess(`You've successfully signed up, ${userCredential.user.email}!`)
-      })
+        setSignUpSuccess(`You've successfully signed up, ${userCredential.user.email}!`);
+        })
       .catch((error) => {
-        setSignUpSuccess(`There was an error signing up: ${error.message}!`)
+        setSignUpSuccess(`There was an error signing up: ${error.message}!`);
       });
     }
 
@@ -41,7 +41,6 @@ function SignIn() {
         setSignOutSuccess(`There was an error signing out: ${error.message}!`);
       });
     }
-
 
   return (
     <React.Fragment>
