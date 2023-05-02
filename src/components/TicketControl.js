@@ -4,7 +4,8 @@ import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
 import { db, auth } from './../firebase.js';
-import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc, query, orderBy } from "firebase/firestore";
+import { formatDistanceToNow } from 'date-fns';
 
 // refactored to use hooks, connect to Firebase, most changed code removed
 
@@ -17,16 +18,26 @@ function TicketControl() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const unSubscribe = onSnapshot(
+    const queryByTimestamp = query(
       collection(db, "tickets"),
-      (collectionSnapshot) => {
+      orderBy("timeOpen")
+    );
+    const unSubscribe = onSnapshot(
+      queryByTimestamp,
+      (querySnapshot) => {
         const tickets = [];
-        collectionSnapshot.forEach((doc) => {
+        querySnapshot.forEach((doc) => {
+          const timeOpen = doc
+            .get("timeOpen", { serverTimestamps: "estimate" })
+            .toDate();
+          const jsDate = new Date(timeOpen);
           tickets.push({
             names: doc.data().names,
-            location:doc.data().location,
+            location: doc.data().location,
             issue: doc.data().issue,
-            id: doc.id
+            timeOpen: jsDate,
+            formattedWaitTime: formatDistanceToNow(jsDate),
+            id: doc.id,
           });
         });
         setMainTicketList(tickets);
@@ -35,8 +46,12 @@ function TicketControl() {
         setError(error.message);
       }
     );
+
     return () => unSubscribe();
   }, []);
+
+
+
 
   const handleClick = () => {
     if (selectedTicket != null) {
