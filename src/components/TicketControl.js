@@ -3,7 +3,7 @@ import NewTicketForm from './NewTicketForm';
 import TicketList from './TicketList';
 import EditTicketForm from './EditTicketForm';
 import TicketDetail from './TicketDetail';
-import db from './../firebase.js';
+import { db } from './../firebase.js';
 import { collection, addDoc, doc, updateDoc, onSnapshot, deleteDoc } from "firebase/firestore";
 
 // refactored to use hooks, connect to Firebase, most changed code removed
