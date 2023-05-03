@@ -69,7 +69,7 @@ function SignIn() {
           type='password'
           name='password'
           placeholder='Password' />
-        <button type='submit'>Sign up</button>
+        <button type='submit'>Sign in</button>
       </form>
 
       <h1>Sign Out</h1>
